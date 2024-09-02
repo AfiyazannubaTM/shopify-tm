@@ -66,7 +66,8 @@
 }
 
 .mainsection-gallery {
-  padding-top: 5px;
+  padding-top: 10px;
+  margin-bottom: -5px;
 }
 
 .gallery-item {
@@ -107,7 +108,8 @@
 
   .slide {
     min-width: 100%;
-    height: auto;
+    width: 120px;
+    height: 400px;
   }
 
   .arrow {
@@ -213,6 +215,21 @@
       "type": "image_block",
       "name": "Image Block",
       "settings": [
+        {
+        "type": "url",
+        "id": "product_image_one_url",
+        "label": "First Image URL"
+        },
+        {
+        "type": "url",
+        "id": "product_image_two_url",
+        "label": "Second Image URL"
+        },
+        {
+        "type": "url",
+        "id": "product_image_three_url",
+        "label": "Third Image URL"
+        },
         {
           "type": "image_picker",
           "id": "product_image_one",
