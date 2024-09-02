@@ -1,0 +1,155 @@
+<div class="customblock">
+  <div class="mainsection">
+    <div class="mainsection-banner">
+      <img
+        src="{{ section.settings.main-image | image_url }}"
+        width="{{ section.settings.image_width }}px"
+        height="{{ section.settings.image_height }}px"
+        alt="Main Banner Image"
+      >
+    </div>
+
+    <div class="mainsection-gallery">
+      {% for block in section.blocks %}
+        <div class="gallery-item" {{ block.shopify_attributes }}>
+          <img
+            src="{{ block.settings.product_image_one | image_url }}"
+            width="{{ block.settings.product_image_width }}px"
+            height="{{ block.settings.product_image_height }}px"
+            alt="{{ block.settings.alt_text }}"
+          >
+            <img
+              src="{{ block.settings.product_image_two | image_url }}"
+              width="{{ block.settings.product_image_width }}px"
+              height="{{ block.settings.product_image_height }}px"
+              alt="{{ block.settings.alt_text }}"
+            >
+              <img
+                src="{{ block.settings.product_image_three | image_url }}"
+                width="{{ block.settings.product_image_width }}px"
+                height="{{ block.settings.product_image_height }}px"
+                alt="{{ block.settings.alt_text }}"
+              >
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% style %}
+  .customblock {
+    width: 100%;
+    height: auto;
+    background-image: url("{{ section.settings.bg-image | image_url }}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
+  .mainsection {
+    padding: 10px 0; 
+  }
+  .mainsection-banner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .mainsection-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+    padding-top: 5px;
+  }
+  .gallery-item img {
+    max-width: 100%; 
+    height: auto; 
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Custom Section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "image_width",
+      "label": "Main Image Width (px)",
+      "default": 500,
+      "min": 100,
+      "max": 1000,
+      "step": 10
+    },
+    {
+      "type": "range",
+      "id": "image_height",
+      "label": "Main Image Height (px)",
+      "default": 200,
+      "min": 100,
+      "max": 500,
+      "step": 10
+    },
+    {
+      "type": "image_picker",
+      "id": "bg-image",
+      "label": "Background Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "main-image",
+      "label": "Main Image"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image_block",
+      "name": "Image Block",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "product_image_one",
+          "label": "Block Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "product_image_two",
+          "label": "Block Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "product_image_three",
+          "label": "Block Image"
+        },
+        {
+          "type": "range",
+          "id": "product_image_width",
+          "label": "Block Image Width (px)",
+          "default": 180,
+          "min": 100,
+          "max": 1000,
+          "step": 10
+        },
+        {
+          "type": "range",
+          "id": "product_image_height",
+          "label": "Block Image Height (px)",
+          "default": 270,
+          "min": 100,
+          "max": 500,
+          "step": 10
+        },
+        {
+          "type": "text",
+          "id": "alt_text",
+          "label": "Alt Text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Default Custom Section"
+    }
+  ]
+}
+{% endschema %}
+
