@@ -11,25 +11,34 @@
 
     <div class="mainsection-gallery">
       {% for block in section.blocks %}
-        <div class="gallery-item" {{ block.shopify_attributes }}>
-          <img
-            src="{{ block.settings.product_image_one | image_url }}"
-            width="{{ block.settings.product_image_width }}px"
-            height="{{ block.settings.product_image_height }}px"
-            alt="{{ block.settings.alt_text }}"
-          >
-            <img
-              src="{{ block.settings.product_image_two | image_url }}"
-              width="{{ block.settings.product_image_width }}px"
-              height="{{ block.settings.product_image_height }}px"
-              alt="{{ block.settings.alt_text }}"
-            >
+        <div class="gallery-item">
+          <div class="slider">
+            <div class="slides">
+              <img 
+                class="slide"
+                src="{{ block.settings.product_image_one | image_url }}"
+                width="{{ block.settings.product_image_width }}px"
+                height="{{ block.settings.product_image_height }}px"
+                alt="{{ block.settings.alt_text }}"
+              >
               <img
+                class="slide"
+                src="{{ block.settings.product_image_two | image_url }}"
+                width="{{ block.settings.product_image_width }}px"
+                height="{{ block.settings.product_image_height }}px"
+                alt="{{ block.settings.alt_text }}"
+              >
+              <img
+                class="slide"
                 src="{{ block.settings.product_image_three | image_url }}"
                 width="{{ block.settings.product_image_width }}px"
                 height="{{ block.settings.product_image_height }}px"
                 alt="{{ block.settings.alt_text }}"
               >
+            </div>
+            <button class="arrow left-arrow">&#9664;</button>
+            <button class="arrow right-arrow">&#9654;</button>
+          </div>
         </div>
       {% endfor %}
     </div>
@@ -37,34 +46,134 @@
 </div>
 
 {% style %}
-  .customblock {
-    width: 100%;
-    height: auto;
-    background-image: url("{{ section.settings.bg-image | image_url }}");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
+ .customblock {
+  width: 100%;
+  height: auto;
+  background-image: url("{{ section.settings.bg-image | image_url }}");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.mainsection {
+  padding: 10px 0; 
+}
+
+.mainsection-banner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mainsection-gallery {
+  padding-top: 5px;
+}
+
+.gallery-item {
+  position: relative;
+}
+
+@media (min-width: 767px){
+  .arrow{
+    display: none;
   }
-  .mainsection {
-    padding: 10px 0; 
-  }
-  .mainsection-banner {
+
+  .slider{
     display: flex;
-    justify-content: center;
     align-items: center;
-  }
-  .mainsection-gallery {
-    display: flex;
-    flex-wrap: wrap;
     justify-content: center;
-    gap: 5px;
-    padding-top: 5px;
   }
-  .gallery-item img {
-    max-width: 100%; 
-    height: auto; 
+}
+
+
+/* Mobile styles */
+@media (max-width: 767px) {
+
+  .mainsection{
+    padding: 0;
   }
+  .mainsection-gallery{
+    padding-top: 0;
+  }
+  .slider {
+    display: flex;
+    overflow: hidden;
+  }
+
+  .slides {
+    display: flex;
+    transition: transform 0.5s ease;
+  }
+
+  .slide {
+    min-width: 100%;
+    height: auto;
+  }
+
+  .arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  .left-arrow {
+    left: 10px;
+  }
+
+  .right-arrow {
+    right: 10px;
+  }
+}
+
 {% endstyle %}
+
+{% javascript %}
+  document.addEventListener('DOMContentLoaded', function() {
+    const initializeSlider = () => {
+      const sliders = document.querySelectorAll('.gallery-item .slider');
+      
+      sliders.forEach(slider => {
+        const slides = slider.querySelector('.slides');
+        const slideCount = slides.children.length;
+        let currentIndex = 0;
+
+        const showSlide = index => {
+          if (index >= slideCount) index = 0;
+          if (index < 0) index = slideCount - 1;
+          slides.style.transform = `translateX(-${index * 100}%)`;
+          currentIndex = index;
+        };
+
+        slider.querySelector('.left-arrow').addEventListener('click', () => {
+          showSlide(currentIndex - 1);
+        });
+
+        slider.querySelector('.right-arrow').addEventListener('click', () => {
+          showSlide(currentIndex + 1);
+        });
+
+        // Removed the auto-slide functionality
+      });
+    };
+
+    const updateSlider = () => {
+      if (window.innerWidth <= 767) {
+        initializeSlider();
+      }
+    };
+
+    // Initialize slider on load if needed
+    updateSlider();
+
+    // Reinitialize slider on resize
+    window.addEventListener('resize', updateSlider);
+  });
+{% endjavascript %}
 
 {% schema %}
 {
