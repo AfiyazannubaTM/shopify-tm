@@ -14,33 +14,27 @@
         <div class="gallery-item">
           <div class="slider">
             <div class="slides">
-              <a href="{{ block.settings.product_image_one_url }}">
-                <img 
-                  class="slide"
-                  src="{{ block.settings.product_image_one | image_url }}"
-                  width="{{ block.settings.product_image_width }}px"
-                  height="{{ block.settings.product_image_height }}px"
-                  alt="{{ block.settings.alt_text }}"
-                >
-              </a>
-              <a href="{{ block.settings.product_image_two_url }}">
-                <img
-                  class="slide"
-                  src="{{ block.settings.product_image_two | image_url }}"
-                  width="{{ block.settings.product_image_width }}px"
-                  height="{{ block.settings.product_image_height }}px"
-                  alt="{{ block.settings.alt_text }}"
-                >
-              </a>
-              <a href="{{ block.settings.product_image_three_url }}">
-                <img
-                  class="slide"
-                  src="{{ block.settings.product_image_three | image_url }}"
-                  width="{{ block.settings.product_image_width }}px"
-                  height="{{ block.settings.product_image_height }}px"
-                  alt="{{ block.settings.alt_text }}"
-                >
-              </a>
+              <img 
+                class="slide"
+                src="{{ block.settings.product_image_one | image_url }}"
+                width="{{ block.settings.product_image_width }}px"
+                height="{{ block.settings.product_image_height }}px"
+                alt="{{ block.settings.alt_text }}"
+              >
+              <img
+                class="slide"
+                src="{{ block.settings.product_image_two | image_url }}"
+                width="{{ block.settings.product_image_width }}px"
+                height="{{ block.settings.product_image_height }}px"
+                alt="{{ block.settings.alt_text }}"
+              >
+              <img
+                class="slide"
+                src="{{ block.settings.product_image_three | image_url }}"
+                width="{{ block.settings.product_image_width }}px"
+                height="{{ block.settings.product_image_height }}px"
+                alt="{{ block.settings.alt_text }}"
+              >
             </div>
             <button class="arrow left-arrow">&#9664;</button>
             <button class="arrow right-arrow">&#9654;</button>
@@ -52,7 +46,7 @@
 </div>
 
 {% style %}
-.customblock {
+ .customblock {
   width: 100%;
   height: auto;
   background-image: url("{{ section.settings.bg-image | image_url }}");
@@ -80,98 +74,107 @@
   position: relative;
 }
 
-.slider {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-}
-
-.slides {
-  display: flex;
-  transition: transform 0.5s ease;
-}
-
-.slide {
-  min-width: 100%;
-  box-sizing: border-box;
-}
-
-.arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-}
-
-.left-arrow {
-  left: 10px;
-}
-
-.right-arrow {
-  right: 10px;
-}
-
-@media (min-width: 767px) {
-  .arrow {
+@media (min-width: 767px){
+  .arrow{
     display: none;
   }
+
+  .slider{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
+
+/* Mobile styles */
 @media (max-width: 767px) {
-  .mainsection {
+
+  .mainsection{
     padding: 0;
   }
-  .mainsection-gallery {
+  .mainsection-gallery{
     padding-top: 0;
   }
+  .slider {
+    display: flex;
+    overflow: hidden;
+  }
+
+  .slides {
+    display: flex;
+    transition: transform 0.5s ease;
+  }
+
+  .slide {
+    min-width: 100%;
+    width: 120px;
+    height: 400px;
+  }
+
+  .arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  .left-arrow {
+    left: 10px;
+  }
+
+  .right-arrow {
+    right: 10px;
+  }
 }
+
 {% endstyle %}
 
 {% javascript %}
-document.addEventListener('DOMContentLoaded', function() {
-  const initializeSlider = () => {
-    const sliders = document.querySelectorAll('.gallery-item .slider');
-    
-    sliders.forEach(slider => {
-      const slides = slider.querySelector('.slides');
-      const slideCount = slides.children.length;
-      let currentIndex = 0;
+  document.addEventListener('DOMContentLoaded', function() {
+    const initializeSlider = () => {
+      const sliders = document.querySelectorAll('.gallery-item .slider');
+      
+      sliders.forEach(slider => {
+        const slides = slider.querySelector('.slides');
+        const slideCount = slides.children.length;
+        let currentIndex = 0;
 
-      const showSlide = index => {
-        if (index >= slideCount) index = 0;
-        if (index < 0) index = slideCount - 1;
-        slides.style.transform = `translateX(-${index * 100}%)`;
-        currentIndex = index;
-      };
+        const showSlide = index => {
+          if (index >= slideCount) index = 0;
+          if (index < 0) index = slideCount - 1;
+          slides.style.transform = `translateX(-${index * 100}%)`;
+          currentIndex = index;
+        };
 
-      slider.querySelector('.left-arrow').addEventListener('click', () => {
-        showSlide(currentIndex - 1);
+        slider.querySelector('.left-arrow').addEventListener('click', () => {
+          showSlide(currentIndex - 1);
+        });
+
+        slider.querySelector('.right-arrow').addEventListener('click', () => {
+          showSlide(currentIndex + 1);
+        });
+
+        // Removed the auto-slide functionality
       });
+    };
 
-      slider.querySelector('.right-arrow').addEventListener('click', () => {
-        showSlide(currentIndex + 1);
-      });
+    const updateSlider = () => {
+      if (window.innerWidth <= 767) {
+        initializeSlider();
+      }
+    };
 
-      // Removed the auto-slide functionality
-    });
-  };
+    // Initialize slider on load if needed
+    updateSlider();
 
-  const updateSlider = () => {
-    if (window.innerWidth <= 767) {
-      initializeSlider();
-    }
-  };
-
-  // Initialize slider on load if needed
-  updateSlider();
-
-  // Reinitialize slider on resize
-  window.addEventListener('resize', updateSlider);
-});
+    // Reinitialize slider on resize
+    window.addEventListener('resize', updateSlider);
+  });
 {% endjavascript %}
 
 {% schema %}
@@ -213,19 +216,19 @@ document.addEventListener('DOMContentLoaded', function() {
       "name": "Image Block",
       "settings": [
         {
-          "type": "url",
-          "id": "product_image_one_url",
-          "label": "First Image URL"
+        "type": "url",
+        "id": "product_image_one_url",
+        "label": "First Image URL"
         },
         {
-          "type": "url",
-          "id": "product_image_two_url",
-          "label": "Second Image URL"
+        "type": "url",
+        "id": "product_image_two_url",
+        "label": "Second Image URL"
         },
         {
-          "type": "url",
-          "id": "product_image_three_url",
-          "label": "Third Image URL"
+        "type": "url",
+        "id": "product_image_three_url",
+        "label": "Third Image URL"
         },
         {
           "type": "image_picker",
@@ -275,3 +278,4 @@ document.addEventListener('DOMContentLoaded', function() {
   ]
 }
 {% endschema %}
+
