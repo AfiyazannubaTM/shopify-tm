@@ -14,6 +14,7 @@
         <div class="gallery-item">
           <div class="slider">
             <div class="slides">
+            <a href= "{{ block.settings.product_image_one_url }}">
               <img 
                 class="slide"
                 src="{{ block.settings.product_image_one | image_url }}"
@@ -21,6 +22,8 @@
                 height="{{ block.settings.product_image_height }}px"
                 alt="{{ block.settings.alt_text }}"
               >
+            </a>
+            <a href= "{{ block.settings.product_image_two_url }}">
               <img
                 class="slide"
                 src="{{ block.settings.product_image_two | image_url }}"
@@ -28,6 +31,8 @@
                 height="{{ block.settings.product_image_height }}px"
                 alt="{{ block.settings.alt_text }}"
               >
+              </a>
+              <a href= "{{ block.settings.product_image_three_url }}">
               <img
                 class="slide"
                 src="{{ block.settings.product_image_three | image_url }}"
@@ -35,6 +40,7 @@
                 height="{{ block.settings.product_image_height }}px"
                 alt="{{ block.settings.alt_text }}"
               >
+              </a>
             </div>
             <button class="arrow left-arrow">&#9664;</button>
             <button class="arrow right-arrow">&#9654;</button>
