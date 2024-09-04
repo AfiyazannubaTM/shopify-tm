@@ -10,177 +10,160 @@
     </div>
 
     <div class="mainsection-gallery">
-      {% for block in section.blocks %}
-        <div class="gallery-item">
-          <div class="slider">
-            <div class="slides">
-            <a href= "{{ block.settings.product_image_one_url }}">
-              <img 
-                class="slide"
-                src="{{ block.settings.product_image_one | image_url }}"
-                width="{{ block.settings.product_image_width }}px"
-                height="{{ block.settings.product_image_height }}px"
-                alt="{{ block.settings.alt_text }}"
-              >
-            </a>
-            <a href= "{{ block.settings.product_image_two_url }}">
-              <img
-                class="slide"
-                src="{{ block.settings.product_image_two | image_url }}"
-                width="{{ block.settings.product_image_width }}px"
-                height="{{ block.settings.product_image_height }}px"
-                alt="{{ block.settings.alt_text }}"
-              >
+      <div class="gallery-item">
+        <div class="slider">
+          <div class="slides">
+            {% for block in section.blocks %}
+              <a href="{{ block.settings.product_image_url }}">
+                <img
+                  class="slide"
+                  src="{{ block.settings.product_image | image_url }}"
+                  width="{{ block.settings.product_image_width }}px"
+                  height="{{ block.settings.product_image_height }}px"
+                  alt="{{ block.settings.alt_text }}"
+                >
               </a>
-              <a href= "{{ block.settings.product_image_three_url }}">
-              <img
-                class="slide"
-                src="{{ block.settings.product_image_three | image_url }}"
-                width="{{ block.settings.product_image_width }}px"
-                height="{{ block.settings.product_image_height }}px"
-                alt="{{ block.settings.alt_text }}"
-              >
-              </a>
-            </div>
-            <button class="arrow left-arrow">&#9664;</button>
-            <button class="arrow right-arrow">&#9654;</button>
+            {% endfor %}
           </div>
+          <button class="arrow left-arrow" id="left">&#9664;</button>
+          <button class="arrow right-arrow" id="right">&#9654;</button>
         </div>
-      {% endfor %}
+      </div>
     </div>
   </div>
 </div>
 
 {% style %}
- .customblock {
-  width: 100%;
-  height: auto;
-  background-image: url("{{ section.settings.bg-image | image_url }}");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
-}
-
-.mainsection {
-  padding: 10px 0; 
-}
-
-.mainsection-banner {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.mainsection-gallery {
-  padding-top: 10px;
-  margin-bottom: -5px;
-}
-
-.gallery-item {
-  position: relative;
-}
-
-@media (min-width: 767px){
-  .arrow{
-    display: none;
+  .customblock {
+    width: 100%;
+    height: auto;
+    background-image: url('{{ section.settings.bg-image | image_url }}');
+    background-size: cover;
+    background-position: center center;
   }
 
-  .slider{
+  .mainsection-banner {
     display: flex;
-    align-items: center;
     justify-content: center;
-  }
-}
-
-
-/* Mobile styles */
-@media (max-width: 767px) {
-
-  .mainsection{
-    padding: 0;
-  }
-  .mainsection-gallery{
-    padding-top: 0;
-  }
-  .slider {
-    display: flex;
-    overflow: hidden;
+    align-items: center;
+    line-height: 0;
   }
 
   .slides {
-    display: flex;
-    transition: transform 0.5s ease;
+    line-height: 0;
   }
 
-  .slide {
-    min-width: 100%;
-    width: 120px;
-    height: 400px;
+  @media (min-width: 767px) {
+    .mainsection {
+      padding: 10px 0;
+    }
+
+    .mainsection-banner {
+      padding-bottom: 10px;
+    }
+
+    .slides {
+      line-height: 0;
+      display: flex;
+      gap: 10px;
+    }
+
+    .arrow {
+      display: none;
+    }
+
+    .slider {
+      display: flex;
+      justify-content: center;
+    }
   }
 
-  .arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-  }
+  /* mobile styles */
+  @media (max-width: 767px) {
+    .gallery-item {
+      position: relative;
+    }
 
-  .left-arrow {
-    left: 10px;
-  }
+    .mainsection-gallery{
+      padding: 10px 0;
+    }
 
-  .right-arrow {
-    right: 10px;
-  }
-}
+    .slider {
+      display: flex;
+      overflow: hidden;
+    }
 
+    .slide {
+      opacity: 0;
+      background-position: center center;
+      background-size: cover;
+      z-index: 1;
+    }
+
+    .slide.active {
+      opacity: 1;
+      position: absolute;
+      top: 0;
+      left: 90px;
+      transition: 0.4s ease-in-out;
+    }
+
+    .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .left-arrow {
+      left: 10px;
+    }
+
+    .right-arrow {
+      right: 10px;
+    }
+  }
 {% endstyle %}
 
 {% javascript %}
-  document.addEventListener('DOMContentLoaded', function() {
-    const initializeSlider = () => {
-      const sliders = document.querySelectorAll('.gallery-item .slider');
-      
-      sliders.forEach(slider => {
-        const slides = slider.querySelector('.slides');
-        const slideCount = slides.children.length;
-        let currentIndex = 0;
-
-        const showSlide = index => {
-          if (index >= slideCount) index = 0;
-          if (index < 0) index = slideCount - 1;
-          slides.style.transform = `translateX(-${index * 100}%)`;
-          currentIndex = index;
-        };
-
-        slider.querySelector('.left-arrow').addEventListener('click', () => {
-          showSlide(currentIndex - 1);
-        });
-
-        slider.querySelector('.right-arrow').addEventListener('click', () => {
-          showSlide(currentIndex + 1);
-        });
-
-        // Removed the auto-slide functionality
-      });
-    };
-
-    const updateSlider = () => {
-      if (window.innerWidth <= 767) {
-        initializeSlider();
-      }
-    };
-
-    // Initialize slider on load if needed
-    updateSlider();
-
-    // Reinitialize slider on resize
-    window.addEventListener('resize', updateSlider);
+  document.addEventListener('DOMContentLoaded', () => {
+    const firstImage = document.querySelector('.slides a img');
+    if (firstImage) {
+      firstImage.classList.add('active');
+    }
   });
+
+  const sliders = document.querySelectorAll('.slide');
+  const leftBtn = document.getElementById('left');
+  const rightBtn = document.getElementById('right');
+
+  let activeSlide = 0;
+
+  rightBtn.addEventListener('click', () => {
+    activeSlide++;
+    if (activeSlide >= sliders.length) {
+      activeSlide = 0;
+    }
+    updateSlide();
+  });
+
+  leftBtn.addEventListener('click', () => {
+    activeSlide--;
+    if (activeSlide < 0) {
+      activeSlide = sliders.length - 1;
+    }
+    updateSlide();
+  });
+
+  function updateSlide() {
+    sliders.forEach((slide, index) => {
+      slide.classList.toggle('active', index === activeSlide);
+    });
+  }
 {% endjavascript %}
 
 {% schema %}
@@ -191,7 +174,7 @@
       "type": "range",
       "id": "image_width",
       "label": "Main Image Width (px)",
-      "default": 500,
+      "default": 560,
       "min": 100,
       "max": 1000,
       "step": 10
@@ -202,7 +185,7 @@
       "label": "Main Image Height (px)",
       "default": 200,
       "min": 100,
-      "max": 500,
+      "max": 1000,
       "step": 10
     },
     {
@@ -222,34 +205,14 @@
       "name": "Image Block",
       "settings": [
         {
-        "type": "url",
-        "id": "product_image_one_url",
-        "label": "First Image URL"
-        },
-        {
-        "type": "url",
-        "id": "product_image_two_url",
-        "label": "Second Image URL"
-        },
-        {
-        "type": "url",
-        "id": "product_image_three_url",
-        "label": "Third Image URL"
+          "type": "url",
+          "id": "product_image_url",
+          "label": "Product Image URL"
         },
         {
           "type": "image_picker",
-          "id": "product_image_one",
-          "label": "Block Image"
-        },
-        {
-          "type": "image_picker",
-          "id": "product_image_two",
-          "label": "Block Image"
-        },
-        {
-          "type": "image_picker",
-          "id": "product_image_three",
-          "label": "Block Image"
+          "id": "product_image",
+          "label": "Product Image"
         },
         {
           "type": "range",
@@ -266,7 +229,7 @@
           "label": "Block Image Height (px)",
           "default": 270,
           "min": 100,
-          "max": 500,
+          "max": 560,
           "step": 10
         },
         {
@@ -284,4 +247,3 @@
   ]
 }
 {% endschema %}
-
