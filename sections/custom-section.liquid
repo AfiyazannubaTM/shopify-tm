@@ -25,8 +25,8 @@
               </a>
             {% endfor %}
           </div>
-          <button class="arrow left-arrow">&#9664;</button>
-          <button class="arrow right-arrow">&#9654;</button>
+          <button class="arrow left-arrow" id="left">&#9664;</button>
+          <button class="arrow right-arrow" id="right">&#9654;</button>
         </div>
       </div>
     </div>
@@ -34,149 +34,136 @@
 </div>
 
 {% style %}
-     .customblock {
-      width: 100%;
-      height: auto;
-      background-image: url("{{ section.settings.bg-image | image_url }}");
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: center center;
-    }
+  .customblock {
+    width: 100%;
+    height: auto;
+    background-image: url('{{ section.settings.bg-image | image_url }}');
+    background-size: cover;
+    background-position: center center;
+  }
 
-    /* .mainsection {
+  .mainsection-banner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 0;
+  }
+
+  .slides {
+    line-height: 0;
+  }
+
+  @media (min-width: 767px) {
+    .mainsection {
       padding: 10px 0;
-    } */
+    }
 
     .mainsection-banner {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      line-height: 0;
-    }
-
-    .slides{
-      line-height: 0;
-    }
-
-    .gallery-item {
-      position: relative;
-    }
-
-    @media (min-width: 767px){
-
-      .mainsection{
-      padding: 10px 0;
-  }
-
-  .mainsection-banner{
       padding-bottom: 10px;
-  }
+    }
 
-      .slides{
+    .slides {
       line-height: 0;
       display: flex;
       gap: 10px;
     }
 
-      .arrow{
-        display: none;
-      }
-
-      .slider{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
+    .arrow {
+      display: none;
     }
 
-
-    /* Mobile styles */
-    @media (max-width: 767px) {
-
-      .mainsection{
-        padding: 0;
-      }
-      .mainsection-gallery{
-        padding-top: 0;
-      }
-      .slider {
-        display: flex;
-        overflow: hidden;
-      }
-
-      .slides {
-        display: flex;
-        transition: transform 0.5s ease;
-      }
-
-      .slide {
-        min-width: 100%;
-        width: 120px;
-        height: 400px;
-      }
-
-      .arrow {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        background: rgba(0, 0, 0, 0.5);
-        color: white;
-        border: none;
-        padding: 10px;
-        cursor: pointer;
-      }
-
-      .left-arrow {
-        left: 10px;
-      }
-
-      .right-arrow {
-        right: 10px;
-      }
+    .slider {
+      display: flex;
+      justify-content: center;
     }
+  }
+
+  /* mobile styles */
+  @media (max-width: 767px) {
+    .gallery-item {
+      position: relative;
+    }
+
+    .mainsection-gallery{
+      padding: 10px 0;
+    }
+
+    .slider {
+      display: flex;
+      overflow: hidden;
+    }
+
+    .slide {
+      opacity: 0;
+      background-position: center center;
+      background-size: cover;
+      z-index: 1;
+    }
+
+    .slide.active {
+      opacity: 1;
+      position: absolute;
+      top: 0;
+      left: 90px;
+      transition: 0.4s ease-in-out;
+    }
+
+    .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .left-arrow {
+      left: 10px;
+    }
+
+    .right-arrow {
+      right: 10px;
+    }
+  }
 {% endstyle %}
 
 {% javascript %}
-  document.addEventListener('DOMContentLoaded', function () {
-    const initializeSlider = () => {
-      const sliders = document.querySelectorAll('.gallery-item .slider');
-
-      sliders.forEach((slider) => {
-        const slides = slider.querySelector('.slides');
-        const slideCount = slides.children.length;
-        let currentIndex = 0;
-
-        const showSlide = (index) => {
-          if (index >= slideCount) index = 0;
-          if (index < 0) index = slideCount - 1;
-          slides.style.transform = `translateX(-${index * 100}%)`;
-          currentIndex = index;
-        };
-
-        slider.querySelector('.left-arrow').addEventListener('click', () => {
-          showSlide(currentIndex - 1);
-        });
-
-        slider.querySelector('.right-arrow').addEventListener('click', () => {
-          showSlide(currentIndex + 1);
-        });
-
-        // Removed the auto-slide functionality
-      });
-    };
-
-    const updateSlider = () => {
-      if (window.innerWidth <= 767) {
-        initializeSlider();
-      }
-    };
-
-    // Initialize slider on load if needed
-    updateSlider();
-
-    // Reinitialize slider on resize
-    window.addEventListener('resize', updateSlider);
+  document.addEventListener('DOMContentLoaded', () => {
+    const firstImage = document.querySelector('.slides a img');
+    if (firstImage) {
+      firstImage.classList.add('active');
+    }
   });
+
+  const sliders = document.querySelectorAll('.slide');
+  const leftBtn = document.getElementById('left');
+  const rightBtn = document.getElementById('right');
+
+  let activeSlide = 0;
+
+  rightBtn.addEventListener('click', () => {
+    activeSlide++;
+    if (activeSlide >= sliders.length) {
+      activeSlide = 0;
+    }
+    updateSlide();
+  });
+
+  leftBtn.addEventListener('click', () => {
+    activeSlide--;
+    if (activeSlide < 0) {
+      activeSlide = sliders.length - 1;
+    }
+    updateSlide();
+  });
+
+  function updateSlide() {
+    sliders.forEach((slide, index) => {
+      slide.classList.toggle('active', index === activeSlide);
+    });
+  }
 {% endjavascript %}
 
 {% schema %}
@@ -220,12 +207,12 @@
         {
           "type": "url",
           "id": "product_image_url",
-          "label": "Image URL"
+          "label": "Product Image URL"
         },
         {
           "type": "image_picker",
           "id": "product_image",
-          "label": "Main Image"
+          "label": "Product Image"
         },
         {
           "type": "range",
